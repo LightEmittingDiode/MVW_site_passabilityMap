@@ -6,6 +6,7 @@ test('previously empty sections carry actual nearby frame identifiers and transf
  const transferred=data.segments.filter(s=>s.nearbyObservation);
  assert.equal(transferred.length,15);assert.equal(data.segments.length,189);
  assert.equal(data.segments.filter(s=>s.estimate).length,0);
+ for(const s of data.segments){assert(Number.isFinite(s.features.meanImuRmsMps2));assert(Number.isFinite(s.features.maxImuRmsMps2));assert(s.features.maxImuRmsMps2>=s.features.meanImuRmsMps2);}
  for(const s of transferred){
   assert.equal(s.sampleCount,10);
   assert.equal(s.nearbyObservation.frameIds.length,10);
