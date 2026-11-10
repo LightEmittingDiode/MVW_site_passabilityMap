@@ -2,7 +2,7 @@
 
 카카오맵 위에 휠체어 노면 등급과 위험도를 표시하고, 출발·도착 두 점 사이의 최단·절충·안전 경로를 비교하는 샘플입니다.
 
-**현재 게시 주소:** https://lightemittingdiode.github.io/moveawheel-passability-map/
+**현재 게시 주소:** https://lightemittingdiode.github.io/MVW_passabilityMap/
 
 ## 기능
 
