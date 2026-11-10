@@ -1,0 +1,7 @@
+import http from 'node:http';
+import fs from 'node:fs';
+import {handleRequest} from './server.mjs';
+const types={'html':'text/html; charset=utf-8','js':'text/javascript; charset=utf-8','css':'text/css; charset=utf-8','json':'application/json; charset=utf-8'};
+const assets={};for(const name of ['measured-data.js','measured-map.js','area-network.js','api-config.js','index.html','app.js','surface.js','network.js','layout.js','style.css','roads-data.js','jangdae-data.json']){const extension=name.split('.').at(-1);if(types[extension])assets['/'+name]={type:types[extension],body:fs.readFileSync(new URL('./'+name,import.meta.url),'utf8')};}
+const port=Number(process.env.PORT||3000);
+http.createServer(async(req,res)=>{try{let body='';for await(const chunk of req){body+=chunk;if(body.length>2048){res.writeHead(413);res.end('Request too large');return;}}const request=new Request('http://'+(req.headers.host||'127.0.0.1:'+port)+req.url,{method:req.method,headers:req.headers,...(['GET','HEAD'].includes(req.method)?{}:{body})});const response=await handleRequest(request,process.env,assets);res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));}catch{res.writeHead(500);res.end('Internal server error');}}).listen(port,'127.0.0.1',()=>console.log('MoveAWheel: http://127.0.0.1:'+port));

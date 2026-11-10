@@ -1,0 +1,6 @@
+{
+  "name": "moveawheel-passability",
+  "main": ".build/index.js",
+  "compatibility_date": "2026-10-02",
+  "build": {"command": "npm run build"}
+}
