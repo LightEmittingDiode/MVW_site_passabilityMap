@@ -22,7 +22,7 @@ function validateMeasuredDataset(value){
  for(const s of value.segments)if(s.estimate)for(const id of s.estimate.sourceSectionIds){const source=value.segments.find(q=>q.id===id);if(!source||source.estimate||source.riskScore===null)throw Error('보간 근거에는 직접 측정 구간이 필요합니다.');}
  return structuredClone(value);
 }
-function measuredRiskColor(score){if(score===null||score===undefined)return '#98a5b6';const t=score/100;return 'rgb('+[22+(220-22)*t,139+(88-139)*t,114+(101-114)*t].map(Math.round).join(',')+')';}
+function measuredRiskColor(score){return window.RiskPalette?.color(score)??(score===null?'#98a5b6':'#168b72');}
 window.MeasuredMap={validate:validateMeasuredDataset,color:measuredRiskColor};
 
 function initializeMeasuredView(){
@@ -31,7 +31,7 @@ function initializeMeasuredView(){
  const dateLabel=value=>new Date(value).toLocaleString('ko-KR');
  const hourLabel=value=>value===null?'측정 없음':new Date(value).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
  function hoverText(s){return '위험도 '+(s.riskScore===null?'미산정':s.riskScore.toFixed(1))+' · 측정 시각 '+hourLabel(s.observedAt);}
- function showHover(s,event){showDetail(s);if(!hoverOverlay||!event?.latLng)return;const content=document.createElement('div');content.className='measured-hover';const title=document.createElement('strong'),line=document.createElement('span');title.textContent=s.name||s.id;line.textContent=hoverText(s);content.append(title,line);hoverOverlay.setContent(content);hoverOverlay.setPosition(event.latLng);hoverOverlay.setMap(measuredMap);}
+ function showHover(s,event){showDetail(s);if(!hoverOverlay||!event?.latLng)return;const content=document.createElement('div');content.className='measured-hover';content.style.backgroundColor=measuredRiskColor(s.riskScore);content.style.color=window.RiskPalette?.text(s.riskScore)??'#ffffff';content.style.borderColor=content.style.backgroundColor;const title=document.createElement('strong'),line=document.createElement('span');title.textContent=s.name||s.id;line.textContent=hoverText(s);content.append(title,line);hoverOverlay.setContent(content);hoverOverlay.setPosition(event.latLng);hoverOverlay.setMap(measuredMap);}
  function hideHover(){hoverOverlay?.setMap(null);}
  function showStatus(title,message,state='waiting'){$('measuredStatus').dataset.state=state;$('measuredStatus').replaceChildren();const strong=document.createElement('strong'),p=document.createElement('p');strong.textContent=title;p.textContent=message;$('measuredStatus').append(strong,p);}
  function fitMeasured(){if(dataset?.coordinateSystem==='LIDAR_LOCAL'){drawLocal();return;}if(!measuredMap)return;if(!dataset){measuredMap.setCenter(new kakao.maps.LatLng(VIEW_CENTER.lat,VIEW_CENTER.lng));measuredMap.setLevel(5);return;}const bounds=new kakao.maps.LatLngBounds();for(const s of dataset.segments)for(const p of s.path)bounds.extend(new kakao.maps.LatLng(p.lat,p.lng));measuredMap.setBounds(bounds);}
