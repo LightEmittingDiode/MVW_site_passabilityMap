@@ -75,3 +75,13 @@ npm run build
 ```
 
 ## 게시 구조
+
+GitHub Pages는 이 저장소의 `main` 브랜치에 있는 `mvw-measured-map/` 폴더를 정적 사이트로 제공합니다. Pages 자체는 카카오 REST API 서버를 실행하지 않습니다. [`mvw-measured-map/api-config.js`](mvw-measured-map/api-config.js)는 Map_Demo의 실시간 요청을 별도 공개 API 서버로 보냅니다. 서버에서 REST 키를 비밀값으로 관리하고 `https://lightemittingdiode.github.io` 출처의 요청을 허용해야 합니다. 다른 서버로 이전할 때는 이 설정과 카카오 JavaScript SDK 허용 도메인을 함께 갱신하세요. Cloudflare Workers 배포용 설정도 [`mvw-measured-map/wrangler.jsonc`](mvw-measured-map/wrangler.jsonc)에 있습니다.
+
+## 현재 검증 범위
+
+- Map의 방위·위치 정합은 잠정값입니다. 가까운 카카오 선형으로 옮긴 결과가 실제 보행 경로와 일치하는지 현장 확인이 필요합니다.
+- Map의 0–100 점수는 상대 진동 지표이며 검증된 통행 위험등급이 아닙니다.
+- Map_Demo의 노면 등급과 위험도는 시연 값입니다. 실측 Map 점수를 경로 비용에 자동으로 사용하지 않습니다.
+
+관련 기술 배경: [MoveAWheel Wheelchair World Model](https://lightemittingdiode.github.io/MVW_site_wheelchairWorldModel/)
